@@ -16,27 +16,54 @@ const projects = [
     github: "https://github.com/estifanosbereket1/ethioexchange",
   },
   {
-    name: "Afromessage TS SDK",
+    name: "afromessage-ts",
     tag: "Open Source",
-    year: "2024",
-    description:
-      "Open-source TypeScript SDK for AfroMessage that abstracts SMS and OTP integrations into a modular client with granular error handling, configurable retry logic, and full type safety — reducing boilerplate for Ethiopian developers.",
-    tech: ["TypeScript", "SDK", "SMS/OTP", "Open Source"],
-    github: "https://github.com/estifanosbereket1/afromessage-ts",
-  },
-  {
-    name: "Aimvoice",
-    tag: "Freelance",
     year: "2026",
     description:
-      "Full-stack payment and invoice management app with Gemini AI integration and object storage for automated document verification and secure handling.",
-    tech: ["React Native", "NestJS", "Next.js", "Gemini AI"],
-    github: "https://github.com/estifanosbereket1/aimvoice",
+      "Unofficial TypeScript SDK for the AfroMessage API. Abstracts SMS and OTP integrations into a modular client with granular typed error handling (auth, rate-limit, validation), configurable retry logic, and full type safety.",
+    tech: ["TypeScript", "SDK", "SMS", "OTP"],
+    github: "https://github.com/estifanosbereket1/afromessage-sdk-unofficial",
+  },
+  {
+    name: "nestjs-afromessage",
+    tag: "Open Source",
+    year: "2026",
+    description:
+      "NestJS wrapper around afromessage-ts. Provides a fully injectable AfroMessageService with forRoot and forRootAsync support — works seamlessly with @nestjs/config for environment-driven setup.",
+    tech: ["NestJS", "TypeScript", "DI", "SDK"],
+    github: "https://github.com/estifanosbereket1/nestjs-afromessage",
+  },
+  {
+    name: "DateOverlap",
+    tag: "Personal",
+    year: "2026",
+    description:
+      "Privacy-first Telegram bot that uses ArcFace facial embeddings and pgvector cosine distance to identify if women are dating the same person — with mutual consent before any info is shared. Photos deleted immediately after embedding extraction.",
+    tech: ["FastAPI", "DeepFace", "pgvector", "PostgreSQL", "Docker"],
+    github: "https://github.com/estifanosbereket1/dateoverlap",
+  },
+  {
+    name: "Wardrobe AI",
+    tag: "Personal",
+    year: "2026",
+    description:
+      "Fully local FastAPI backend for an AI outfit suggester — no LLM API costs. Fashion-CLIP auto-tags clothing, OpenCV K-Means extracts dominant colors, and a custom rules engine scores outfit combos by weather, mood, and color harmony.",
+    tech: ["FastAPI", "Fashion-CLIP", "OpenCV", "PostgreSQL", "Python"],
+    github: "https://github.com/estifanosbereket1/wardrobe-ai",
+  },
+  {
+    name: "goreactnative",
+    tag: "Tool",
+    year: "2025",
+    description:
+      "Fast portable CLI in Go that automates common React Native / Expo project setup: prebuilds Android native folders, fixes gradle.properties, and manages Java alternatives — all embedded into a single binary via Go embed.",
+    tech: ["Go", "CLI", "React Native", "Expo", "Android"],
+    github: "https://github.com/estifanosbereket1/react_native_fixer",
   },
 ];
 
 const skills = [
-  { label: "Languages", items: ["TypeScript", "Python"] },
+  { label: "Languages", items: ["TypeScript", "Python", "Go"] },
   { label: "Mobile", items: ["React Native", "Flutter", "Expo"] },
   { label: "Frontend", items: ["React", "Next.js"] },
   { label: "Backend", items: ["NestJS", "Express", "FastAPI", "Node.js"] },
@@ -67,30 +94,21 @@ const experience = [
   },
 ];
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
 type ContribDay = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
 type ContribWeek = { days: ContribDay[] };
 
-// ─── GitHub Contribution Graph ────────────────────────────────────────────────
-
 function getLevelColor(level: number): string {
-  // matches GitHub's dark-mode greens
-  const colors = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"];
-  return colors[level] ?? colors[0];
+  return (
+    ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"][level] ?? "#161b22"
+  );
 }
 
 function buildWeeks(days: ContribDay[]): ContribWeek[] {
   const weeks: ContribWeek[] = [];
   let week: ContribDay[] = [];
-
-  // pad start so first day lands on correct weekday (Sun=0)
-  const firstDay = new Date(days[0]?.date ?? "");
-  const startPad = firstDay.getDay(); // 0=Sun
-  for (let i = 0; i < startPad; i++) {
+  const startPad = new Date(days[0]?.date ?? "").getDay();
+  for (let i = 0; i < startPad; i++)
     week.push({ date: "", count: 0, level: 0 });
-  }
-
   for (const day of days) {
     week.push(day);
     if (week.length === 7) {
@@ -108,12 +126,12 @@ function getMonthLabels(
   const labels: { label: string; col: number }[] = [];
   let lastMonth = -1;
   weeks.forEach((w, col) => {
-    const firstRealDay = w.days.find((d) => d.date !== "");
-    if (!firstRealDay) return;
-    const month = new Date(firstRealDay.date).getMonth();
+    const first = w.days.find((d) => d.date !== "");
+    if (!first) return;
+    const month = new Date(first.date).getMonth();
     if (month !== lastMonth) {
       labels.push({
-        label: new Date(firstRealDay.date).toLocaleString("default", {
+        label: new Date(first.date).toLocaleString("default", {
           month: "short",
         }),
         col,
@@ -136,31 +154,23 @@ function ContributionGraph({ username }: { username: string }) {
   } | null>(null);
 
   useEffect(() => {
-    async function fetchContribs() {
+    async function fetch_() {
       try {
-        // Use a CORS-friendly proxy that reads GitHub's SVG contribution graph
-        // and returns structured JSON
         const res = await fetch(
           `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
         );
-        if (!res.ok) throw new Error("fetch failed");
+        if (!res.ok) throw new Error();
         const json = await res.json();
-
-        // The API returns { total: { lastYear: N }, contributions: [{date, count, level}] }
-        const rawDays: ContribDay[] = (
-          json.contributions as Array<{
-            date: string;
-            count: number;
-            level: 0 | 1 | 2 | 3 | 4;
-          }>
-        ).map((d) => ({
-          date: d.date,
-          count: d.count,
-          level: d.level,
-        }));
-
+        const rawDays: ContribDay[] = json.contributions.map(
+          (d: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }) => ({
+            date: d.date,
+            count: d.count,
+            level: d.level,
+          }),
+        );
         setTotal(
-          json.total?.lastYear ?? rawDays.reduce((s, d) => s + d.count, 0),
+          json.total?.lastYear ??
+            rawDays.reduce((s: number, d: ContribDay) => s + d.count, 0),
         );
         setWeeks(buildWeeks(rawDays));
       } catch {
@@ -169,17 +179,15 @@ function ContributionGraph({ username }: { username: string }) {
         setLoading(false);
       }
     }
-    fetchContribs();
+    fetch_();
   }, [username]);
 
-  const CELL = 11;
-  const GAP = 3;
-  const ROWS = 7;
-  const cellStep = CELL + GAP;
-
+  const CELL = 11,
+    GAP = 3,
+    cellStep = CELL + GAP;
   const monthLabels = getMonthLabels(weeks);
 
-  if (loading) {
+  if (loading)
     return (
       <div className="flex items-center gap-2 py-6 text-xs text-white/20">
         <span className="animate-pulse" style={{ color: ACCENT }}>
@@ -188,22 +196,16 @@ function ContributionGraph({ username }: { username: string }) {
         <span>fetching contributions…</span>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <p className="text-xs text-white/20 py-4">
-        Could not load contribution data. Check back later.
+        Could not load contribution data.
       </p>
     );
-  }
-
-  const svgWidth = weeks.length * cellStep;
-  const svgHeight = ROWS * cellStep;
 
   return (
     <div className="relative">
-      {/* Header */}
       <div className="flex items-baseline gap-3 mb-5">
         <span className="text-white text-sm font-semibold">
           {total.toLocaleString()} contributions
@@ -224,14 +226,12 @@ function ContributionGraph({ username }: { username: string }) {
         </a>
       </div>
 
-      {/* Graph */}
       <div className="overflow-x-auto">
         <svg
-          width={svgWidth + 4}
-          height={svgHeight + 22}
+          width={weeks.length * cellStep + 4}
+          height={7 * cellStep + 22}
           style={{ display: "block" }}
         >
-          {/* Month labels */}
           {monthLabels.map(({ label, col }) => (
             <text
               key={label + col}
@@ -244,13 +244,10 @@ function ContributionGraph({ username }: { username: string }) {
               {label}
             </text>
           ))}
-
-          {/* Cells */}
           <g transform="translate(0, 16)">
             {weeks.map((week, wi) =>
-              week.days.map((day, di) => {
-                if (!day.date) return null;
-                return (
+              week.days.map((day, di) =>
+                !day.date ? null : (
                   <rect
                     key={day.date}
                     x={wi * cellStep}
@@ -259,27 +256,26 @@ function ContributionGraph({ username }: { username: string }) {
                     height={CELL}
                     rx={2}
                     fill={getLevelColor(day.level)}
-                    style={{ cursor: "default", transition: "fill 0.1s" }}
+                    style={{ cursor: "default" }}
                     onMouseEnter={(e) => {
-                      const rect = (
+                      const r = (
                         e.target as SVGRectElement
                       ).getBoundingClientRect();
                       setTooltip({
                         text: `${day.count} contribution${day.count !== 1 ? "s" : ""} · ${day.date}`,
-                        x: rect.left + rect.width / 2,
-                        y: rect.top - 8,
+                        x: r.left + r.width / 2,
+                        y: r.top - 8,
                       });
                     }}
                     onMouseLeave={() => setTooltip(null)}
                   />
-                );
-              }),
+                ),
+              ),
             )}
           </g>
         </svg>
       </div>
 
-      {/* Legend */}
       <div className="flex items-center gap-1.5 mt-3">
         <span className="text-[10px] text-white/20 mr-1">Less</span>
         {[0, 1, 2, 3, 4].map((l) => (
@@ -296,7 +292,6 @@ function ContributionGraph({ username }: { username: string }) {
         <span className="text-[10px] text-white/20 ml-1">More</span>
       </div>
 
-      {/* Tooltip — rendered via portal-like fixed div */}
       {tooltip && (
         <div
           className="fixed z-50 pointer-events-none px-2.5 py-1.5 text-[11px] text-white rounded"
@@ -315,8 +310,6 @@ function ContributionGraph({ username }: { username: string }) {
     </div>
   );
 }
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function SectionLabel({ index, label }: { index: string; label: string }) {
   return (
@@ -338,10 +331,19 @@ function SectionLabel({ index, label }: { index: string; label: string }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+const TAG_COLORS: Record<string, string> = {
+  "Open Source": "#38bdf8",
+  Tool: "#fb923c",
+  Personal: ACCENT,
+};
 
 export default function Home() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [filter, setFilter] = useState<string>("All");
+
+  const tags = ["All", ...Array.from(new Set(projects.map((p) => p.tag)))];
+  const filtered =
+    filter === "All" ? projects : projects.filter((p) => p.tag === filter);
 
   return (
     <main
@@ -402,7 +404,6 @@ export default function Home() {
               whoami
             </span>
           </div>
-
           <h1 className="text-[72px] font-bold leading-none tracking-tighter mb-1 text-white">
             Estifanos
           </h1>
@@ -412,14 +413,12 @@ export default function Home() {
           >
             Bereket_
           </h1>
-
           <div className="flex items-center gap-4 mb-7">
             <div className="h-px w-6" style={{ background: ACCENT + "60" }} />
             <p className="text-[10px] text-white/30 tracking-[0.25em] uppercase">
               Full-Stack Engineer · Mobile Developer · Addis Ababa
             </p>
           </div>
-
           <p className="text-[14px] text-white/45 leading-[2] max-w-xl mb-10">
             I build reliable backend systems and cross-platform mobile apps.
             React Native, Flutter, NestJS, Next.js. From{" "}
@@ -427,7 +426,6 @@ export default function Home() {
             platforms with <span className="text-white/70">15+ modules</span> —
             I care about code that scales and ships.
           </p>
-
           <div className="flex items-center gap-3">
             {[
               {
@@ -464,7 +462,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Skills ── */}
         <section className="mb-32">
           <SectionLabel index="01" label="skills" />
           <div
@@ -499,7 +496,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Experience ── */}
         <section id="work" className="mb-32">
           <SectionLabel index="02" label="experience" />
           <div className="space-y-px">
@@ -543,77 +539,109 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Projects ── */}
         <section id="projects" className="mb-32">
           <SectionLabel index="03" label="projects" />
+
+          <div className="flex items-center gap-2 mb-6 flex-wrap">
+            {tags.map((t) => {
+              const active = filter === t;
+              const color = t === "All" ? ACCENT : (TAG_COLORS[t] ?? ACCENT);
+              return (
+                <button
+                  key={t}
+                  onClick={() => {
+                    setFilter(t);
+                    setHoveredProject(null);
+                  }}
+                  className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 transition-all duration-150"
+                  style={{
+                    border: `1px solid ${active ? color + "50" : "rgba(255,255,255,0.08)"}`,
+                    color: active ? color : "rgba(255,255,255,0.25)",
+                    background: active ? color + "10" : "transparent",
+                  }}
+                >
+                  {t}
+                </button>
+              );
+            })}
+            <span className="ml-auto text-[10px] text-white/15">
+              {filtered.length} projects
+            </span>
+          </div>
+
           <div className="space-y-px">
-            {projects.map((p, i) => (
-              <div
-                key={i}
-                onMouseEnter={() => setHoveredProject(i)}
-                onMouseLeave={() => setHoveredProject(null)}
-                className="p-6 transition-all duration-300 cursor-default"
-                style={{
-                  border: `1px solid ${hoveredProject === i ? ACCENT + "30" : "rgba(255,255,255,0.06)"}`,
-                  background:
-                    hoveredProject === i ? ACCENT + "06" : "transparent",
-                }}
-              >
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-white font-semibold text-sm">
-                      {p.name}
-                    </h3>
-                    <span
-                      className="text-[9px] px-2 py-0.5 tracking-[0.15em] uppercase"
-                      style={{
-                        color: ACCENT + "cc",
-                        border: `1px solid ${ACCENT}25`,
-                      }}
-                    >
-                      {p.tag}
-                    </span>
+            {filtered.map((p, i) => {
+              const tagColor = TAG_COLORS[p.tag] ?? ACCENT;
+              return (
+                <div
+                  key={p.name}
+                  onMouseEnter={() => setHoveredProject(i)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  className="p-6 transition-all duration-300 cursor-default"
+                  style={{
+                    border: `1px solid ${hoveredProject === i ? tagColor + "30" : "rgba(255,255,255,0.06)"}`,
+                    background:
+                      hoveredProject === i ? tagColor + "06" : "transparent",
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h3 className="text-white font-semibold text-sm">
+                        {p.name}
+                      </h3>
+                      <span
+                        className="text-[9px] px-2 py-0.5 tracking-[0.15em] uppercase"
+                        style={{
+                          color: tagColor + "cc",
+                          border: `1px solid ${tagColor}25`,
+                        }}
+                      >
+                        {p.tag}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <span className="text-[10px] text-white/20">
+                        {p.year}
+                      </span>
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-[10px] tracking-[0.15em] uppercase flex items-center gap-1 transition-colors duration-150"
+                        style={{ color: "rgba(255,255,255,0.2)" }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.color = tagColor)
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.color =
+                            "rgba(255,255,255,0.2)")
+                        }
+                      >
+                        github ↗
+                      </a>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 shrink-0">
-                    <span className="text-[10px] text-white/20">{p.year}</span>
-                    <a
-                      href={p.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-[10px] tracking-[0.15em] uppercase flex items-center gap-1 transition-colors duration-150"
-                      style={{ color: "rgba(255,255,255,0.2)" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = ACCENT)
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = "rgba(255,255,255,0.2)")
-                      }
-                    >
-                      github ↗
-                    </a>
+                  <p className="text-[13px] text-white/40 leading-relaxed mb-4">
+                    {p.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {p.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="text-[11px] text-white/25 px-2 py-0.5"
+                        style={{ border: "1px solid rgba(255,255,255,0.07)" }}
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </div>
                 </div>
-                <p className="text-[13px] text-white/40 leading-relaxed mb-4">
-                  {p.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {p.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="text-[11px] text-white/25 px-2 py-0.5"
-                      style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
-        {/* ── GitHub Activity ── */}
         <section className="mb-32">
           <SectionLabel index="04" label="activity" />
           <div
@@ -624,7 +652,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Education ── */}
         <section className="mb-20">
           <SectionLabel index="05" label="education" />
           <div
@@ -633,19 +660,18 @@ export default function Home() {
           >
             <div>
               <h3 className="text-white text-sm font-semibold">
-                Software Engineering
+                Information Systems
               </h3>
               <p className="text-[12px] text-white/30 mt-1">
-                B.Sc · In Progress
+                B.Sc · Addis Ababa University
               </p>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest">
-              2022 — 2027
+              2022 — 2026
             </span>
           </div>
         </section>
 
-        {/* Footer */}
         <div
           className="flex items-center justify-between pt-8"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
