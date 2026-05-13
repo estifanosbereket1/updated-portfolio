@@ -38,7 +38,7 @@ const projects = [
     tag: "Personal",
     year: "2026",
     description:
-      "Privacy-first Telegram bot that uses ArcFace facial embeddings and pgvector cosine distance to identify if women are dating the same person — with mutual consent before any info is shared. Photos deleted immediately after embedding extraction.",
+      "Privacy-first Telegram bot using ArcFace facial embeddings and pgvector cosine distance to detect if women are dating the same person — with mutual consent before any info is shared. Photos deleted immediately after embedding extraction.",
     tech: ["FastAPI", "DeepFace", "pgvector", "PostgreSQL", "Docker"],
     github: "https://github.com/estifanosbereket1/dateoverlap",
   },
@@ -56,7 +56,7 @@ const projects = [
     tag: "Tool",
     year: "2025",
     description:
-      "Fast portable CLI in Go that automates common React Native / Expo project setup: prebuilds Android native folders, fixes gradle.properties, and manages Java alternatives — all embedded into a single binary via Go embed.",
+      "Fast portable Go CLI that automates React Native / Expo Android setup: prebuilds native folders, fixes gradle.properties, and manages Java alternatives — all embedded into a single binary via Go embed.",
     tech: ["Go", "CLI", "React Native", "Expo", "Android"],
     github: "https://github.com/estifanosbereket1/react_native_fixer",
   },
@@ -225,7 +225,6 @@ function ContributionGraph({ username }: { username: string }) {
           @{username} ↗
         </a>
       </div>
-
       <div className="overflow-x-auto">
         <svg
           width={weeks.length * cellStep + 4}
@@ -275,7 +274,6 @@ function ContributionGraph({ username }: { username: string }) {
           </g>
         </svg>
       </div>
-
       <div className="flex items-center gap-1.5 mt-3">
         <span className="text-[10px] text-white/20 mr-1">Less</span>
         {[0, 1, 2, 3, 4].map((l) => (
@@ -291,7 +289,6 @@ function ContributionGraph({ username }: { username: string }) {
         ))}
         <span className="text-[10px] text-white/20 ml-1">More</span>
       </div>
-
       {tooltip && (
         <div
           className="fixed z-50 pointer-events-none px-2.5 py-1.5 text-[11px] text-white rounded"
@@ -340,10 +337,20 @@ const TAG_COLORS: Record<string, string> = {
 export default function Home() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const [filter, setFilter] = useState<string>("All");
+  const [downloading, setDownloading] = useState(false);
 
   const tags = ["All", ...Array.from(new Set(projects.map((p) => p.tag)))];
   const filtered =
     filter === "All" ? projects : projects.filter((p) => p.tag === filter);
+
+  function handleDownload() {
+    setDownloading(true);
+    const a = document.createElement("a");
+    a.href = "/estifanos_bereket_cv.pdf";
+    a.download = "Estifanos_Bereket_CV.pdf";
+    a.click();
+    setTimeout(() => setDownloading(false), 1800);
+  }
 
   return (
     <main
@@ -426,7 +433,7 @@ export default function Home() {
             platforms with <span className="text-white/70">15+ modules</span> —
             I care about code that scales and ships.
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             {[
               {
                 label: "github",
@@ -462,6 +469,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Skills ── */}
         <section className="mb-32">
           <SectionLabel index="01" label="skills" />
           <div
@@ -496,6 +504,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Experience ── */}
         <section id="work" className="mb-32">
           <SectionLabel index="02" label="experience" />
           <div className="space-y-px">
@@ -539,9 +548,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Projects ── */}
         <section id="projects" className="mb-32">
           <SectionLabel index="03" label="projects" />
-
           <div className="flex items-center gap-2 mb-6 flex-wrap">
             {tags.map((t) => {
               const active = filter === t;
@@ -568,7 +577,6 @@ export default function Home() {
               {filtered.length} projects
             </span>
           </div>
-
           <div className="space-y-px">
             {filtered.map((p, i) => {
               const tagColor = TAG_COLORS[p.tag] ?? ACCENT;
@@ -642,6 +650,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── GitHub Activity ── */}
         <section className="mb-32">
           <SectionLabel index="04" label="activity" />
           <div
@@ -652,8 +661,84 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── CV Download ── */}
+        <section className="mb-32">
+          <SectionLabel index="05" label="resume" />
+          <div
+            className="p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+            style={{
+              border: "1px solid rgba(255,255,255,0.06)",
+              background: "rgba(255,255,255,0.015)",
+            }}
+          >
+            {/* Left: info */}
+            <div>
+              <p className="text-white text-sm font-semibold mb-1">
+                Estifanos Bereket — CV
+              </p>
+              <p className="text-[12px] text-white/30 mb-3">
+                Full-Stack Engineer & Mobile Developer · PDF · Updated May 2026
+              </p>
+              <div className="flex flex-wrap gap-3 text-[10px] text-white/20">
+                {["Experience", "Projects", "Skills", "Education"].map(
+                  (item) => (
+                    <span key={item} className="flex items-center gap-1.5">
+                      <span style={{ color: ACCENT + "80" }}>✓</span> {item}
+                    </span>
+                  ),
+                )}
+              </div>
+            </div>
+
+            {/* Right: download button */}
+            <button
+              onClick={handleDownload}
+              className="group relative flex items-center gap-3 px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-semibold transition-all duration-200 shrink-0 overflow-hidden"
+              style={{
+                border: `1px solid ${ACCENT}50`,
+                color: downloading ? ACCENT : "rgba(255,255,255,0.5)",
+                background: downloading ? ACCENT + "15" : "transparent",
+              }}
+              onMouseEnter={(e) => {
+                if (!downloading) {
+                  e.currentTarget.style.background = ACCENT + "12";
+                  e.currentTarget.style.color = ACCENT;
+                  e.currentTarget.style.borderColor = ACCENT + "90";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!downloading) {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+                  e.currentTarget.style.borderColor = ACCENT + "50";
+                }
+              }}
+            >
+              {/* Animated download icon */}
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                className={downloading ? "animate-bounce" : ""}
+                style={{ color: ACCENT }}
+              >
+                <path
+                  d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10h10"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {downloading ? "downloading…" : "download cv"}
+            </button>
+          </div>
+        </section>
+
+        {/* ── Education ── */}
         <section className="mb-20">
-          <SectionLabel index="05" label="education" />
+          <SectionLabel index="06" label="education" />
           <div
             className="p-6 flex items-center justify-between"
             style={{ border: "1px solid rgba(255,255,255,0.06)" }}
@@ -667,11 +752,12 @@ export default function Home() {
               </p>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest">
-              2022 — 2026
+              2022 — 2027
             </span>
           </div>
         </section>
 
+        {/* Footer */}
         <div
           className="flex items-center justify-between pt-8"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
