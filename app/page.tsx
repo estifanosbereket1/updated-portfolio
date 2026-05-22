@@ -321,7 +321,7 @@ function SectionLabel({ index, label }: { index: string; label: string }) {
         className="h-px flex-1"
         style={{ background: "rgba(255,255,255,0.06)" }}
       />
-      <span className="text-[10px] tracking-[0.2em] uppercase text-white/20">
+      <span className="text-[10px] tracking-[0.2em] uppercase text-white/40">
         ~/{label}
       </span>
     </div>
@@ -383,19 +383,58 @@ export default function Home() {
               estifanos
             </span>
           </div>
-          <div className="flex items-center gap-6 text-[10px] text-white/25 tracking-[0.15em] uppercase">
-            <a href="#about" className="hover:text-white/60 transition-colors">
+          <div className="flex items-center gap-6 text-[10px] text-white/50 tracking-[0.15em] uppercase">
+            <a href="#about" className="hover:text-white/80 transition-colors">
               home
             </a>
-            <a href="#work" className="hover:text-white/60 transition-colors">
+            <a href="#work" className="hover:text-white/80 transition-colors">
               work
             </a>
             <a
               href="#projects"
-              className="hover:text-white/60 transition-colors"
+              className="hover:text-white/80 transition-colors"
             >
               projects
             </a>
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 px-3 py-1.5 transition-all duration-200"
+              style={{
+                border: `1px solid ${ACCENT}40`,
+                color: downloading ? ACCENT : "rgba(255,255,255,0.25)",
+                background: downloading ? ACCENT + "10" : "transparent",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = ACCENT + "80";
+                e.currentTarget.style.color = ACCENT;
+                e.currentTarget.style.background = ACCENT + "10";
+              }}
+              onMouseLeave={(e) => {
+                if (!downloading) {
+                  e.currentTarget.style.borderColor = ACCENT + "40";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.25)";
+                  e.currentTarget.style.background = "transparent";
+                }
+              }}
+            >
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 13 13"
+                fill="none"
+                className={downloading ? "animate-bounce" : ""}
+                style={{ color: "currentColor" }}
+              >
+                <path
+                  d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10h10"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {downloading ? "downloading…" : "cv"}
+            </button>
           </div>
         </div>
       </nav>
@@ -426,7 +465,7 @@ export default function Home() {
               Full-Stack Engineer · Mobile Developer · Addis Ababa
             </p>
           </div>
-          <p className="text-[14px] text-white/45 leading-[2] max-w-xl mb-10">
+          <p className="text-[14px] text-white/60 leading-[2] max-w-xl mb-10">
             I build reliable backend systems and cross-platform mobile apps.
             React Native, Flutter, NestJS, Next.js. From{" "}
             <span className="text-white/70">15,000-download apps</span> to ERP
@@ -492,7 +531,7 @@ export default function Home() {
                   {items.map((item) => (
                     <span
                       key={item}
-                      className="text-[11px] text-white/50 px-2 py-0.5"
+                      className="text-[11px] text-white/65 px-2 py-0.5"
                       style={{ background: "rgba(255,255,255,0.04)" }}
                     >
                       {item}
@@ -531,7 +570,7 @@ export default function Home() {
                   {job.bullets.map((b, j) => (
                     <li
                       key={j}
-                      className="flex gap-3 text-[13px] text-white/40 leading-relaxed"
+                      className="flex gap-3 text-[13px] text-white/60 leading-relaxed"
                     >
                       <span
                         className="shrink-0"
@@ -630,14 +669,14 @@ export default function Home() {
                       </a>
                     </div>
                   </div>
-                  <p className="text-[13px] text-white/40 leading-relaxed mb-4">
+                  <p className="text-[13px] text-white/60 leading-relaxed mb-4">
                     {p.description}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {p.tech.map((t) => (
                       <span
                         key={t}
-                        className="text-[11px] text-white/25 px-2 py-0.5"
+                        className="text-[11px] text-white/45 px-2 py-0.5"
                         style={{ border: "1px solid rgba(255,255,255,0.07)" }}
                       >
                         {t}
@@ -676,10 +715,10 @@ export default function Home() {
               <p className="text-white text-sm font-semibold mb-1">
                 Estifanos Bereket — CV
               </p>
-              <p className="text-[12px] text-white/30 mb-3">
+              <p className="text-[12px] text-white/50 mb-3">
                 Full-Stack Engineer & Mobile Developer · PDF · Updated May 2026
               </p>
-              <div className="flex flex-wrap gap-3 text-[10px] text-white/20">
+              <div className="flex flex-wrap gap-3 text-[10px] text-white/40">
                 {["Experience", "Projects", "Skills", "Education"].map(
                   (item) => (
                     <span key={item} className="flex items-center gap-1.5">
@@ -747,12 +786,12 @@ export default function Home() {
               <h3 className="text-white text-sm font-semibold">
                 Information Systems
               </h3>
-              <p className="text-[12px] text-white/30 mt-1">
+              <p className="text-[12px] text-white/50 mt-1">
                 B.Sc · Addis Ababa University
               </p>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest">
-              2022 — 2027
+              2022 — 2025
             </span>
           </div>
         </section>
@@ -762,12 +801,12 @@ export default function Home() {
           className="flex items-center justify-between pt-8"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
-          <span className="text-[10px] text-white/15 tracking-widest">
+          <span className="text-[10px] text-white/35 tracking-widest">
             Addis Ababa · Ethiopia
           </span>
           <a
             href="mailto:estifanosbereket297@gmail.com"
-            className="text-[10px] text-white/15 hover:text-white/40 transition-colors tracking-widest"
+            className="text-[10px] text-white/35 hover:text-white/60 transition-colors tracking-widest"
           >
             estifanosbereket297@gmail.com
           </a>
