@@ -84,14 +84,7 @@ const experience = [
       "Integrated Chapa + local bank payment flows (CBE, Awash, Abyssinia) with real-time notifications.",
     ],
   },
-  {
-    role: "Full-Stack Engineer",
-    company: "Freelance",
-    period: "Feb 2026 – Present",
-    bullets: [
-      "Built Aimvoice — payment & invoice management using React Native, NestJS, and Next.js with Gemini AI and object storage.",
-    ],
-  },
+
 ];
 
 type ContribDay = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
