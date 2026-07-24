@@ -340,7 +340,7 @@ export default function Home() {
     setDownloading(true);
     const a = document.createElement("a");
     a.href = "/estifanos_bereket_cv.pdf";
-    a.download = "Estifanos_Bereket_CV.pdf";
+    a.download = "EstifanosFullStackCv.pdf";
     a.click();
     setTimeout(() => setDownloading(false), 1800);
   }
