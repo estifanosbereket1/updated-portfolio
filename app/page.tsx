@@ -5,7 +5,46 @@ import { useState, useEffect } from "react";
 const GITHUB_USERNAME = "estifanosbereket1";
 const ACCENT = "#4ade80";
 
-const projects = [
+type Project = {
+  name: string;
+  tag: string;
+  year: string;
+  description: string;
+  tech: string[];
+  github: string;
+  live?: string;
+};
+
+const projects: Project[] = [
+  {
+    name: "ClipVault",
+    tag: "Personal",
+    year: "2026",
+    description:
+      "A fully local clipboard manager for Ubuntu/Linux Mint — tray icon, global hotkey, and a QR-code feature that copies any entry straight to your phone by scanning. LAN peer sync, clipboard diffing, content-type detection, burn-after-copy, and full theming. Nothing ever touches a cloud server.",
+    tech: ["Python", "GTK", "FastAPI", "SQLite", "mDNS"],
+    github: "https://github.com/estifanosbereket1/clipvault",
+    live: "https://clipvault-landing.vercel.app/",
+  },
+  {
+    name: "achawatch",
+    tag: "Personal",
+    year: "2026",
+    description:
+      "A glassmorphic tray music player for Linux built with Tauri — a draggable orb showing the current track's artwork and play/pause, expanding into a full library dashboard. Local SQLite library, native Rust audio pipeline, 10-band EQ, lyrics, and MPRIS media keys. No cloud, no accounts, no telemetry.",
+    tech: ["Tauri", "Rust", "React", "TypeScript", "SQLite"],
+    github: "https://github.com/estifanosbereket1/achawatch",
+    live: "https://achawach-landing.vercel.app/",
+  },
+  {
+    name: "TeleLite",
+    tag: "Open Source",
+    year: "2026",
+    description:
+      "An unofficial, text-only Telegram client for feature phones — one self-hosted Flask + Telethon backend reachable from a no-JS browser page, a KaiOS app, and a J2ME app for older Java ME phones. Deliberately lightweight for slow connections and low-power devices.",
+    tech: ["Flask", "Telethon", "Python", "J2ME", "KaiOS"],
+    github: "https://github.com/estifanosbereket1/telelite",
+  },
   {
     name: "EthioExchange",
     tag: "Personal",
@@ -647,42 +686,76 @@ export default function Home() {
                         {p.tag}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 shrink-0">
-                      <span className="text-[10px] text-white/45">
-                        {p.year}
-                      </span>
+                    <span className="text-[10px] text-white/45 shrink-0">
+                      {p.year}
+                    </span>
+                  </div>
+                  <p className="text-[13px] text-white/60 leading-relaxed mb-4">
+                    {p.description}
+                  </p>
+                  <div className="flex items-end justify-between gap-4 flex-wrap">
+                    <div className="flex flex-wrap gap-1.5">
+                      {p.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="text-[11px] text-white/45 px-2 py-0.5"
+                          style={{
+                            border: "1px solid rgba(255,255,255,0.07)",
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
+                      {p.live && (
+                        <a
+                          href={p.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 transition-all duration-150"
+                          style={{
+                            color: tagColor,
+                            border: `1px solid ${tagColor}50`,
+                            background: tagColor + "10",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = tagColor + "22";
+                            e.currentTarget.style.borderColor = tagColor;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = tagColor + "10";
+                            e.currentTarget.style.borderColor = tagColor + "50";
+                          }}
+                        >
+                          live site ↗
+                        </a>
+                      )}
                       <a
                         href={p.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="text-[10px] tracking-[0.15em] uppercase flex items-center gap-1 transition-colors duration-150"
-                        style={{ color: "rgba(255,255,255,0.45)" }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.color = tagColor)
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.color =
-                            "rgba(255,255,255,0.45)")
-                        }
+                        className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 transition-all duration-150"
+                        style={{
+                          color: "rgba(255,255,255,0.45)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+                          e.currentTarget.style.borderColor =
+                            "rgba(255,255,255,0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = "rgba(255,255,255,0.45)";
+                          e.currentTarget.style.borderColor =
+                            "rgba(255,255,255,0.1)";
+                        }}
                       >
-                        github ↗
+                        code ↗
                       </a>
                     </div>
-                  </div>
-                  <p className="text-[13px] text-white/60 leading-relaxed mb-4">
-                    {p.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="text-[11px] text-white/45 px-2 py-0.5"
-                        style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-                      >
-                        {t}
-                      </span>
-                    ))}
                   </div>
                 </div>
               );
