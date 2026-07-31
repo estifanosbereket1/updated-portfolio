@@ -84,7 +84,15 @@ const experience = [
       "Integrated Chapa + local bank payment flows (CBE, Awash, Abyssinia) with real-time notifications.",
     ],
   },
-
+  {
+    role: "DevOps Engineer & Full-Stack Developer",
+    company: "E and B Business Consultancy",
+    period: "May 2026 – Jul 2026 · Contract",
+    bullets: [
+      "Handled deployment and release management of the company's CRM systems as DevOps engineer.",
+      "Maintained and extended their existing sites as a full-stack developer alongside deployment work.",
+    ],
+  },
 ];
 
 type ContribDay = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
@@ -182,7 +190,7 @@ function ContributionGraph({ username }: { username: string }) {
 
   if (loading)
     return (
-      <div className="flex items-center gap-2 py-6 text-xs text-white/20">
+      <div className="flex items-center gap-2 py-6 text-xs text-white/45">
         <span className="animate-pulse" style={{ color: ACCENT }}>
           ▋
         </span>
@@ -192,7 +200,7 @@ function ContributionGraph({ username }: { username: string }) {
 
   if (error)
     return (
-      <p className="text-xs text-white/20 py-4">
+      <p className="text-xs text-white/45 py-4">
         Could not load contribution data.
       </p>
     );
@@ -203,16 +211,16 @@ function ContributionGraph({ username }: { username: string }) {
         <span className="text-white text-sm font-semibold">
           {total.toLocaleString()} contributions
         </span>
-        <span className="text-xs text-white/25">in the last year</span>
+        <span className="text-xs text-white/45">in the last year</span>
         <a
           href={`https://github.com/${username}`}
           target="_blank"
           rel="noopener noreferrer"
           className="ml-auto text-[10px] tracking-[0.15em] uppercase flex items-center gap-1 transition-colors"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.45)" }}
           onMouseEnter={(e) => (e.currentTarget.style.color = ACCENT)}
           onMouseLeave={(e) =>
-            (e.currentTarget.style.color = "rgba(255,255,255,0.2)")
+            (e.currentTarget.style.color = "rgba(255,255,255,0.45)")
           }
         >
           @{username} ↗
@@ -314,7 +322,7 @@ function SectionLabel({ index, label }: { index: string; label: string }) {
         className="h-px flex-1"
         style={{ background: "rgba(255,255,255,0.06)" }}
       />
-      <span className="text-[10px] tracking-[0.2em] uppercase text-white/40">
+      <span className="text-[10px] tracking-[0.2em] uppercase text-white/55">
         ~/{label}
       </span>
     </div>
@@ -372,7 +380,7 @@ export default function Home() {
             >
               EB
             </div>
-            <span className="text-[10px] text-white/20 tracking-[0.2em] uppercase">
+            <span className="text-[10px] text-white/40 tracking-[0.2em] uppercase">
               estifanos
             </span>
           </div>
@@ -394,7 +402,7 @@ export default function Home() {
               className="flex items-center gap-2 px-3 py-1.5 transition-all duration-200"
               style={{
                 border: `1px solid ${ACCENT}40`,
-                color: downloading ? ACCENT : "rgba(255,255,255,0.25)",
+                color: downloading ? ACCENT : "rgba(255,255,255,0.45)",
                 background: downloading ? ACCENT + "10" : "transparent",
               }}
               onMouseEnter={(e) => {
@@ -405,7 +413,7 @@ export default function Home() {
               onMouseLeave={(e) => {
                 if (!downloading) {
                   e.currentTarget.style.borderColor = ACCENT + "40";
-                  e.currentTarget.style.color = "rgba(255,255,255,0.25)";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.45)";
                   e.currentTarget.style.background = "transparent";
                 }
               }}
@@ -439,7 +447,7 @@ export default function Home() {
             <span style={{ color: ACCENT }} className="text-xs">
               ▶
             </span>
-            <span className="text-[10px] text-white/20 tracking-[0.25em]">
+            <span className="text-[10px] text-white/40 tracking-[0.25em]">
               whoami
             </span>
           </div>
@@ -454,7 +462,7 @@ export default function Home() {
           </h1>
           <div className="flex items-center gap-4 mb-7">
             <div className="h-px w-6" style={{ background: ACCENT + "60" }} />
-            <p className="text-[10px] text-white/30 tracking-[0.25em] uppercase">
+            <p className="text-[10px] text-white/55 tracking-[0.25em] uppercase">
               Full-Stack Engineer · Mobile Developer · Addis Ababa
             </p>
           </div>
@@ -480,16 +488,16 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 px-5 py-2.5 text-[10px] tracking-[0.2em] uppercase transition-all duration-200"
                 style={{
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "rgba(255,255,255,0.4)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "rgba(255,255,255,0.55)",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = ACCENT + "60";
                   e.currentTarget.style.color = ACCENT;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.color = "rgba(255,255,255,0.4)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.55)";
                 }}
               >
                 {label}{" "}
@@ -555,7 +563,7 @@ export default function Home() {
                       @ {job.company}
                     </span>
                   </div>
-                  <span className="text-[10px] text-white/20 tracking-widest shrink-0 mt-0.5">
+                  <span className="text-[10px] text-white/45 tracking-widest shrink-0 mt-0.5">
                     {job.period}
                   </span>
                 </div>
@@ -597,7 +605,7 @@ export default function Home() {
                   className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 transition-all duration-150"
                   style={{
                     border: `1px solid ${active ? color + "50" : "rgba(255,255,255,0.08)"}`,
-                    color: active ? color : "rgba(255,255,255,0.25)",
+                    color: active ? color : "rgba(255,255,255,0.45)",
                     background: active ? color + "10" : "transparent",
                   }}
                 >
@@ -605,7 +613,7 @@ export default function Home() {
                 </button>
               );
             })}
-            <span className="ml-auto text-[10px] text-white/15">
+            <span className="ml-auto text-[10px] text-white/40">
               {filtered.length} projects
             </span>
           </div>
@@ -640,7 +648,7 @@ export default function Home() {
                       </span>
                     </div>
                     <div className="flex items-center gap-4 shrink-0">
-                      <span className="text-[10px] text-white/20">
+                      <span className="text-[10px] text-white/45">
                         {p.year}
                       </span>
                       <a
@@ -649,13 +657,13 @@ export default function Home() {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         className="text-[10px] tracking-[0.15em] uppercase flex items-center gap-1 transition-colors duration-150"
-                        style={{ color: "rgba(255,255,255,0.2)" }}
+                        style={{ color: "rgba(255,255,255,0.45)" }}
                         onMouseEnter={(e) =>
                           (e.currentTarget.style.color = tagColor)
                         }
                         onMouseLeave={(e) =>
                           (e.currentTarget.style.color =
-                            "rgba(255,255,255,0.2)")
+                            "rgba(255,255,255,0.45)")
                         }
                       >
                         github ↗
@@ -711,7 +719,7 @@ export default function Home() {
               <p className="text-[12px] text-white/50 mb-3">
                 Full-Stack Engineer & Mobile Developer · PDF · Updated May 2026
               </p>
-              <div className="flex flex-wrap gap-3 text-[10px] text-white/40">
+              <div className="flex flex-wrap gap-3 text-[10px] text-white/55">
                 {["Experience", "Projects", "Skills", "Education"].map(
                   (item) => (
                     <span key={item} className="flex items-center gap-1.5">
@@ -783,7 +791,7 @@ export default function Home() {
                 B.Sc · Addis Ababa University
               </p>
             </div>
-            <span className="text-[10px] text-white/20 tracking-widest">
+            <span className="text-[10px] text-white/45 tracking-widest">
               2022 — 2025
             </span>
           </div>
@@ -794,12 +802,12 @@ export default function Home() {
           className="flex items-center justify-between pt-8"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
-          <span className="text-[10px] text-white/35 tracking-widest">
+          <span className="text-[10px] text-white/50 tracking-widest">
             Addis Ababa · Ethiopia
           </span>
           <a
             href="mailto:estifanosbereket297@gmail.com"
-            className="text-[10px] text-white/35 hover:text-white/60 transition-colors tracking-widest"
+            className="text-[10px] text-white/50 hover:text-white/75 transition-colors tracking-widest"
           >
             estifanosbereket297@gmail.com
           </a>
